@@ -1,73 +1,177 @@
-# Welcome to your Lovable project
+# @eslint-community/regexpp
 
-## Project info
+[![npm version](https://img.shields.io/npm/v/@eslint-community/regexpp.svg)](https://www.npmjs.com/package/@eslint-community/regexpp)
+[![Downloads/month](https://img.shields.io/npm/dm/@eslint-community/regexpp.svg)](http://www.npmtrends.com/@eslint-community/regexpp)
+[![Build Status](https://github.com/eslint-community/regexpp/workflows/CI/badge.svg)](https://github.com/eslint-community/regexpp/actions)
+[![codecov](https://codecov.io/gh/eslint-community/regexpp/branch/main/graph/badge.svg)](https://codecov.io/gh/eslint-community/regexpp)
 
-**URL**: https://blossom-folio-bot.lovable.app/
+A regular expression parser for ECMAScript.
 
-## How can I edit this code?
+## 💿 Installation
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [https://blossom-folio-bot.lovable.app/ and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+$ npm install @eslint-community/regexpp
 ```
 
-**Edit a file directly in GitHub**
+- require Node@^12.0.0 || ^14.0.0 || >=16.0.0.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📖 Usage
 
-**Use GitHub Codespaces**
+```ts
+import {
+    AST,
+    RegExpParser,
+    RegExpValidator,
+    RegExpVisitor,
+    parseRegExpLiteral,
+    validateRegExpLiteral,
+    visitRegExpAST
+} from "@eslint-community/regexpp"
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### parseRegExpLiteral(source, options?)
 
-## What technologies are used for this project?
+Parse a given regular expression literal then make AST object.
 
-This project is built with:
+This is equivalent to `new RegExpParser(options).parseLiteral(source)`.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Parameters:**
+    - `source` (`string | RegExp`) The source code to parse.
+    - `options?` ([`RegExpParser.Options`]) The options to parse.
+- **Return:**
+    - The AST of the regular expression.
 
-## How can I deploy this project?
+### validateRegExpLiteral(source, options?)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Validate a given regular expression literal.
 
-## Can I connect a custom domain to my Lovable project?
+This is equivalent to `new RegExpValidator(options).validateLiteral(source)`.
 
-Yes, you can!
+- **Parameters:**
+    - `source` (`string`) The source code to validate.
+    - `options?` ([`RegExpValidator.Options`]) The options to validate.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### visitRegExpAST(ast, handlers)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Visit each node of a given AST.
+
+This is equivalent to `new RegExpVisitor(handlers).visit(ast)`.
+
+- **Parameters:**
+    - `ast` ([`AST.Node`]) The AST to visit.
+    - `handlers` ([`RegExpVisitor.Handlers`]) The callbacks.
+
+### RegExpParser
+
+#### new RegExpParser(options?)
+
+- **Parameters:**
+    - `options?` ([`RegExpParser.Options`]) The options to parse.
+
+#### parser.parseLiteral(source, start?, end?)
+
+Parse a regular expression literal.
+
+- **Parameters:**
+    - `source` (`string`) The source code to parse. E.g. `"/abc/g"`.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+- **Return:**
+    - The AST of the regular expression.
+
+#### parser.parsePattern(source, start?, end?, flags?)
+
+Parse a regular expression pattern.
+
+- **Parameters:**
+    - `source` (`string`) The source code to parse. E.g. `"abc"`.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+    - `flags?` (`{ unicode?: boolean, unicodeSets?: boolean }`) The flags to enable Unicode mode, and Unicode Set mode.
+- **Return:**
+    - The AST of the regular expression pattern.
+
+#### parser.parseFlags(source, start?, end?)
+
+Parse a regular expression flags.
+
+- **Parameters:**
+    - `source` (`string`) The source code to parse. E.g. `"gim"`.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+- **Return:**
+    - The AST of the regular expression flags.
+
+### RegExpValidator
+
+#### new RegExpValidator(options)
+
+- **Parameters:**
+    - `options` ([`RegExpValidator.Options`]) The options to validate.
+
+#### validator.validateLiteral(source, start, end)
+
+Validate a regular expression literal.
+
+- **Parameters:**
+    - `source` (`string`) The source code to validate.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+
+#### validator.validatePattern(source, start, end, flags)
+
+Validate a regular expression pattern.
+
+- **Parameters:**
+    - `source` (`string`) The source code to validate.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+    - `flags?` (`{ unicode?: boolean, unicodeSets?: boolean }`) The flags to enable Unicode mode, and Unicode Set mode.
+
+#### validator.validateFlags(source, start, end)
+
+Validate a regular expression flags.
+
+- **Parameters:**
+    - `source` (`string`) The source code to validate.
+    - `start?` (`number`) The start index in the source code. Default is `0`.
+    - `end?` (`number`) The end index in the source code. Default is `source.length`.
+
+### RegExpVisitor
+
+#### new RegExpVisitor(handlers)
+
+- **Parameters:**
+    - `handlers` ([`RegExpVisitor.Handlers`]) The callbacks.
+
+#### visitor.visit(ast)
+
+Validate a regular expression literal.
+
+- **Parameters:**
+    - `ast` ([`AST.Node`]) The AST to visit.
+
+## 📰 Changelog
+
+- [GitHub Releases](https://github.com/eslint-community/regexpp/releases)
+
+## 🍻 Contributing
+
+Welcome contributing!
+
+Please use GitHub's Issues/PRs.
+
+### Development Tools
+
+- `npm test` runs tests and measures coverage.
+- `npm run build` compiles TypeScript source code to `index.js`, `index.js.map`, and `index.d.ts`.
+- `npm run clean` removes the temporary files which are created by `npm test` and `npm run build`.
+- `npm run lint` runs ESLint.
+- `npm run update:test` updates test fixtures.
+- `npm run update:ids` updates `src/unicode/ids.ts`.
+- `npm run watch` runs tests with `--watch` option.
+
+[`AST.Node`]: src/ast.ts#L4
+[`RegExpParser.Options`]: src/parser.ts#L743
+[`RegExpValidator.Options`]: src/validator.ts#L220
+[`RegExpVisitor.Handlers`]: src/visitor.ts#L291
